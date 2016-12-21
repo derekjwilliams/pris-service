@@ -1,0 +1,417 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 9.5.5
+-- Dumped by pg_dump version 9.5.5
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner:
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner:
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+--
+-- Name: postgis; Type: EXTENSION; Schema: -; Owner:
+--
+
+CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner:
+--
+
+COMMENT ON EXTENSION postgis IS 'PostGIS geometry, geography, and raster spatial types and functions';
+
+
+SET search_path = public, pg_catalog;
+
+--
+-- Name: featuretype; Type: TYPE; Schema: public; Owner: prisdbuser
+--
+
+CREATE TYPE featuretype AS ENUM (
+    'feature',
+    'hazard'
+);
+
+
+ALTER TYPE featuretype OWNER TO prisdbuser;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: feature; Type: TABLE; Schema: public; Owner: prisdbuser
+--
+
+CREATE TABLE feature (
+    id integer NOT NULL,
+    name character varying(512),
+    boundary geometry(GeometryCollection,4326),
+    inspection_date date,
+    data_values json,
+    description character varying(20000),
+    site_id integer,
+    aspect featuretype,
+    type character varying(100)
+);
+
+
+ALTER TABLE feature OWNER TO prisdbuser;
+
+--
+-- Name: feature_action; Type: TABLE; Schema: public; Owner: prisdbuser
+--
+
+CREATE TABLE feature_action (
+    id integer NOT NULL,
+    action_date date,
+    performed_by character varying(200),
+    data_values json,
+    feature_id integer
+);
+
+
+ALTER TABLE feature_action OWNER TO prisdbuser;
+
+--
+-- Name: TABLE feature_action; Type: COMMENT; Schema: public; Owner: prisdbuser
+--
+
+COMMENT ON TABLE feature_action IS 'This describes what actions are preformed on a feature, e.g. inspection.  These are not actions associated with hazards, see hazard and hazard_action tables for representation of hazard actions';
+
+
+--
+-- Name: COLUMN feature_action.action_date; Type: COMMENT; Schema: public; Owner: prisdbuser
+--
+
+COMMENT ON COLUMN feature_action.action_date IS 'When the action was performed';
+
+
+--
+-- Name: COLUMN feature_action.performed_by; Type: COMMENT; Schema: public; Owner: prisdbuser
+--
+
+COMMENT ON COLUMN feature_action.performed_by IS 'Who performed the action';
+
+
+--
+-- Name: COLUMN feature_action.data_values; Type: COMMENT; Schema: public; Owner: prisdbuser
+--
+
+COMMENT ON COLUMN feature_action.data_values IS 'Additional data not represented in existing fields';
+
+
+--
+-- Name: feature_id_seq; Type: SEQUENCE; Schema: public; Owner: prisdbuser
+--
+
+CREATE SEQUENCE feature_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE feature_id_seq OWNER TO prisdbuser;
+
+--
+-- Name: feature_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: prisdbuser
+--
+
+ALTER SEQUENCE feature_id_seq OWNED BY feature.id;
+
+
+--
+-- Name: hazard; Type: TABLE; Schema: public; Owner: prisdbuser
+--
+
+CREATE TABLE hazard (
+    id integer NOT NULL,
+    feature_id integer,
+    data_values json,
+    description character varying(20000)
+);
+
+
+ALTER TABLE hazard OWNER TO prisdbuser;
+
+--
+-- Name: hazard_action; Type: TABLE; Schema: public; Owner: prisdbuser
+--
+
+CREATE TABLE hazard_action (
+    id integer NOT NULL,
+    data_values json,
+    hazard_id integer,
+    action_data date
+);
+
+
+ALTER TABLE hazard_action OWNER TO prisdbuser;
+
+--
+-- Name: mine_feature_action_id_seq; Type: SEQUENCE; Schema: public; Owner: prisdbuser
+--
+
+CREATE SEQUENCE mine_feature_action_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE mine_feature_action_id_seq OWNER TO prisdbuser;
+
+--
+-- Name: mine_feature_action_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: prisdbuser
+--
+
+ALTER SEQUENCE mine_feature_action_id_seq OWNED BY hazard_action.id;
+
+
+--
+-- Name: mine_feature_action_type; Type: TABLE; Schema: public; Owner: prisdbuser
+--
+
+CREATE TABLE mine_feature_action_type (
+    id integer NOT NULL,
+    name character varying(100),
+    description character varying(1000)
+);
+
+
+ALTER TABLE mine_feature_action_type OWNER TO prisdbuser;
+
+--
+-- Name: site; Type: TABLE; Schema: public; Owner: prisdbuser
+--
+
+CREATE TABLE site (
+    id integer NOT NULL,
+    primary_name character varying(500) NOT NULL,
+    creation_date date,
+    boundary geometry(GeometryCollection,4326),
+    federal_facility_identifier character varying(100),
+    cerclis_identifier character varying(100),
+    site_state_aml_number character varying(100)
+);
+
+
+ALTER TABLE site OWNER TO prisdbuser;
+
+--
+-- Name: site_action; Type: TABLE; Schema: public; Owner: prisdbuser
+--
+
+CREATE TABLE site_action (
+    id integer NOT NULL,
+    action_date date,
+    performed_by character varying(200),
+    data_values json,
+    site_id integer
+);
+
+
+ALTER TABLE site_action OWNER TO prisdbuser;
+
+--
+-- Name: TABLE site_action; Type: COMMENT; Schema: public; Owner: prisdbuser
+--
+
+COMMENT ON TABLE site_action IS 'This describes what actions are preformed on a site, e.g. inspection';
+
+
+--
+-- Name: COLUMN site_action.action_date; Type: COMMENT; Schema: public; Owner: prisdbuser
+--
+
+COMMENT ON COLUMN site_action.action_date IS 'Date when the action was performed';
+
+
+--
+-- Name: COLUMN site_action.performed_by; Type: COMMENT; Schema: public; Owner: prisdbuser
+--
+
+COMMENT ON COLUMN site_action.performed_by IS 'Who performed the action';
+
+
+--
+-- Name: COLUMN site_action.data_values; Type: COMMENT; Schema: public; Owner: prisdbuser
+--
+
+COMMENT ON COLUMN site_action.data_values IS 'Additional data not represented in existing fields';
+
+
+--
+-- Name: site_id_seq; Type: SEQUENCE; Schema: public; Owner: prisdbuser
+--
+
+CREATE SEQUENCE site_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE site_id_seq OWNER TO prisdbuser;
+
+--
+-- Name: site_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: prisdbuser
+--
+
+ALTER SEQUENCE site_id_seq OWNED BY site.id;
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: prisdbuser
+--
+
+ALTER TABLE ONLY feature ALTER COLUMN id SET DEFAULT nextval('feature_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: prisdbuser
+--
+
+ALTER TABLE ONLY hazard_action ALTER COLUMN id SET DEFAULT nextval('mine_feature_action_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: prisdbuser
+--
+
+ALTER TABLE ONLY site ALTER COLUMN id SET DEFAULT nextval('site_id_seq'::regclass);
+
+
+--
+-- Name: action_type_pkey; Type: CONSTRAINT; Schema: public; Owner: prisdbuser
+--
+
+ALTER TABLE ONLY mine_feature_action_type
+    ADD CONSTRAINT action_type_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: feature_action_pkey; Type: CONSTRAINT; Schema: public; Owner: prisdbuser
+--
+
+ALTER TABLE ONLY feature_action
+    ADD CONSTRAINT feature_action_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: feature_pkey; Type: CONSTRAINT; Schema: public; Owner: prisdbuser
+--
+
+ALTER TABLE ONLY feature
+    ADD CONSTRAINT feature_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: hazard_pkey; Type: CONSTRAINT; Schema: public; Owner: prisdbuser
+--
+
+ALTER TABLE ONLY hazard
+    ADD CONSTRAINT hazard_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: mine_feature_action_pkey; Type: CONSTRAINT; Schema: public; Owner: prisdbuser
+--
+
+ALTER TABLE ONLY hazard_action
+    ADD CONSTRAINT mine_feature_action_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: site_action_pkey; Type: CONSTRAINT; Schema: public; Owner: prisdbuser
+--
+
+ALTER TABLE ONLY site_action
+    ADD CONSTRAINT site_action_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: site_pkey; Type: CONSTRAINT; Schema: public; Owner: prisdbuser
+--
+
+ALTER TABLE ONLY site
+    ADD CONSTRAINT site_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: feature_action_feature_fkey; Type: FK CONSTRAINT; Schema: public; Owner: prisdbuser
+--
+
+ALTER TABLE ONLY feature_action
+    ADD CONSTRAINT feature_action_feature_fkey FOREIGN KEY (feature_id) REFERENCES feature(id);
+
+
+--
+-- Name: feature_site_fkey; Type: FK CONSTRAINT; Schema: public; Owner: prisdbuser
+--
+
+ALTER TABLE ONLY feature
+    ADD CONSTRAINT feature_site_fkey FOREIGN KEY (site_id) REFERENCES site(id);
+
+
+--
+-- Name: hazard_action_hazard_fkey; Type: FK CONSTRAINT; Schema: public; Owner: prisdbuser
+--
+
+ALTER TABLE ONLY hazard_action
+    ADD CONSTRAINT hazard_action_hazard_fkey FOREIGN KEY (hazard_id) REFERENCES hazard(id);
+
+
+--
+-- Name: hazard_feature_fkey; Type: FK CONSTRAINT; Schema: public; Owner: prisdbuser
+--
+
+ALTER TABLE ONLY hazard
+    ADD CONSTRAINT hazard_feature_fkey FOREIGN KEY (feature_id) REFERENCES feature(id);
+
+
+--
+-- Name: site_action_site_fkey; Type: FK CONSTRAINT; Schema: public; Owner: prisdbuser
+--
+
+ALTER TABLE ONLY site_action
+    ADD CONSTRAINT site_action_site_fkey FOREIGN KEY (site_id) REFERENCES site(id);
+
+
+--
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- PostgreSQL database dump complete
+--
