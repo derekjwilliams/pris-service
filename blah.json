@@ -1,0 +1,1918 @@
+{
+	"swagger": "2.0",
+	"info": {
+		"description": "This API is used for charts, graphs, and reports pertaining to the usage of ScienceBase Catalog",
+		"version": "1.6.2",
+		"title": "ScienceBase Catalog Metrics API",
+		"contact": {
+			"name": "ScienceBase Team"
+		},
+		"license": {
+			"name": "Apache License Version 2.0",
+			"url": "http://www.apache.org/licenses/LICENSE-2.0"
+		}
+	},
+	"host": "localhost:8094",
+	"basePath": "/",
+	"tags": [
+		{
+			"name": "metrics-controller",
+			"description": "Metrics Controller"
+		}
+	],
+	"paths": {
+		"/agents": {
+			"get": {
+				"tags": [
+					"metrics-controller"
+				],
+				"summary": "Top agent requests by agent. Default is top 20 overall over timeframe.short days config setting or 30 days.",
+				"operationId": "getAgentsUsingGET",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"*/*"
+				],
+				"parameters": [
+					{
+						"name": "top",
+						"in": "path",
+						"description": "Limit on top agents.",
+						"required": false,
+						"type": "string",
+						"default": "20"
+					},
+					{
+						"name": "type",
+						"in": "path",
+						"description": "Type: all, robots, mozilla, other.",
+						"required": false,
+						"type": "string",
+						"default": "all"
+					},
+					{
+						"name": "name",
+						"in": "path",
+						"description": "Name of agent or starting string ('%' is wildcard).",
+						"required": false,
+						"type": "string",
+						"default": "A%"
+					},
+					{
+						"name": "from",
+						"in": "path",
+						"description": "From Date",
+						"required": false,
+						"type": "string",
+						"default": "2016/01/01"
+					},
+					{
+						"name": "to",
+						"in": "path",
+						"description": "To Date",
+						"required": false,
+						"type": "string",
+						"default": "2016/02/01"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/definitions/ResponseEntity"
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				}
+			}
+		},
+		"/agents/chart": {
+			"get": {
+				"tags": [
+					"metrics-controller"
+				],
+				"summary": "Distribution of requests across scanner (bot/spider/crawler), Mozilla, other (API). The Inteval is timeframe back from today (expressed in terms of Postgresql Interval (ex: 1 day, 2 weeks, etc.)",
+				"operationId": "getAgentDistributionChartUsingGET",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"*/*"
+				],
+				"parameters": [
+					{
+						"name": "from",
+						"in": "path",
+						"description": "From date",
+						"required": false,
+						"type": "string",
+						"default": "1 week"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/definitions/ResponseEntity"
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				}
+			}
+		},
+		"/agents/details": {
+			"get": {
+				"tags": [
+					"metrics-controller"
+				],
+				"summary": "Return details a particular agent.",
+				"operationId": "getAgentDetailsUsingGET",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"*/*"
+				],
+				"parameters": [
+					{
+						"name": "agentId",
+						"in": "path",
+						"description": "agentId",
+						"required": true,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/definitions/ResponseEntity"
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				}
+			}
+		},
+		"/agents/details/collection": {
+			"get": {
+				"tags": [
+					"metrics-controller"
+				],
+				"summary": "Return details for collection of all user agent records for a particular agent.",
+				"operationId": "getAgentCollectionDetailsUsingGET",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"*/*"
+				],
+				"parameters": [
+					{
+						"name": "agent",
+						"in": "path",
+						"description": "agent",
+						"required": true,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/definitions/ResponseEntity"
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				}
+			}
+		},
+		"/agents/requests/locations": {
+			"get": {
+				"tags": [
+					"metrics-controller"
+				],
+				"summary": "Return a list of top requesting locations for a particular agent. Default is top 20 for past 90 days or timeframe.med config param.",
+				"operationId": "getAgentRequestsByLocationUsingGET",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"*/*"
+				],
+				"parameters": [
+					{
+						"name": "from",
+						"in": "path",
+						"description": "from",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "to",
+						"in": "path",
+						"description": "to",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "top",
+						"in": "path",
+						"description": "top",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "agent",
+						"in": "path",
+						"description": "agent",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "agentId",
+						"in": "path",
+						"description": "agentId",
+						"required": false,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/definitions/ResponseEntity"
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				}
+			}
+		},
+		"/agents/types": {
+			"get": {
+				"tags": [
+					"metrics-controller"
+				],
+				"summary": "Possible user agent types and their unique IDs.",
+				"operationId": "getAgentTypeInfoUsingGET",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"*/*"
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/definitions/ResponseEntity"
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				}
+			}
+		},
+		"/clients/new": {
+			"get": {
+				"tags": [
+					"metrics-controller"
+				],
+				"summary": "Counts of new visiting client IDs (IP addresses) by day from a specific date.",
+				"operationId": "getNewVisitorCountsUsingGET",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"*/*"
+				],
+				"parameters": [
+					{
+						"name": "from",
+						"in": "path",
+						"description": "From Date",
+						"required": false,
+						"type": "string",
+						"default": "2017/01/01"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/definitions/ResponseEntity"
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				}
+			}
+		},
+		"/communities/files": {
+			"get": {
+				"tags": [
+					"metrics-controller"
+				],
+				"summary": "Return the total number of files and storage allocation per community.",
+				"operationId": "getFileCountsAndSizesPerCommunityUsingGET",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"*/*"
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/definitions/ResponseEntity"
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				}
+			}
+		},
+		"/communities/items": {
+			"get": {
+				"tags": [
+					"metrics-controller"
+				],
+				"summary": "Return the total item counts per community.",
+				"operationId": "getItemCountPerCommunityUsingGET",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"*/*"
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/definitions/ResponseEntity"
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				}
+			}
+		},
+		"/custom/groups/requests": {
+			"get": {
+				"tags": [
+					"metrics-controller"
+				],
+				"summary": "Return a list of custom groups/client applications and their total requests between dates.",
+				"operationId": "getCustomGroupRequestsUsingGET",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"*/*"
+				],
+				"parameters": [
+					{
+						"name": "from",
+						"in": "path",
+						"description": "from",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "to",
+						"in": "path",
+						"description": "to",
+						"required": false,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/definitions/ResponseEntity"
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				}
+			}
+		},
+		"/defaults/timeframes": {
+			"get": {
+				"tags": [
+					"metrics-controller"
+				],
+				"summary": "Get the default timeframes.",
+				"operationId": "getDefaultTimeframesUsingGET",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"*/*"
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"type": "array",
+							"items": {
+								"type": "object"
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				}
+			}
+		},
+		"/item/agents/requests": {
+			"get": {
+				"tags": [
+					"metrics-controller"
+				],
+				"summary": "Returns a list of item request counts per agent during a span of time.",
+				"operationId": "getAgentItemRequestCountsUsingGET",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"*/*"
+				],
+				"parameters": [
+					{
+						"name": "item",
+						"in": "path",
+						"description": "ScienceBase Catalog Item ID.",
+						"required": false,
+						"type": "string",
+						"default": "55b943ade4b09a3b01b65d78"
+					},
+					{
+						"name": "top",
+						"in": "path",
+						"description": "Limit for top occurring.",
+						"required": false,
+						"type": "string",
+						"default": "20"
+					},
+					{
+						"name": "from",
+						"in": "path",
+						"description": "From Date",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "to",
+						"in": "path",
+						"description": "To Date",
+						"required": false,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"type": "array",
+							"items": {
+								"type": "object"
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				}
+			}
+		},
+		"/item/locations/requests": {
+			"get": {
+				"tags": [
+					"metrics-controller"
+				],
+				"summary": "Return a list of top requesting locations for a particular item. Default is top 20 for past 90 days or timeframe.med config param.",
+				"operationId": "getTopItemRequestLocationsUsingGET",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"*/*"
+				],
+				"parameters": [
+					{
+						"name": "from",
+						"in": "path",
+						"description": "from",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "to",
+						"in": "path",
+						"description": "to",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "top",
+						"in": "path",
+						"description": "top",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "item",
+						"in": "path",
+						"description": "item",
+						"required": true,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/definitions/ResponseEntity"
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				}
+			}
+		},
+		"/item/{item}": {
+			"get": {
+				"tags": [
+					"metrics-controller"
+				],
+				"summary": "Returns a list of counts of requests for an item by day, week, month, or year over timeframe.long days config setting or 180 days.",
+				"operationId": "getItemRequestCountsUsingGET",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"*/*"
+				],
+				"parameters": [
+					{
+						"name": "item",
+						"in": "path",
+						"description": "ScienceBase Catalog Item ID.",
+						"required": false,
+						"type": "string",
+						"default": "55b943ade4b09a3b01b65d78"
+					},
+					{
+						"name": "timescale",
+						"in": "path",
+						"description": "Timescale: day, week, month, year",
+						"required": false,
+						"type": "string",
+						"default": "week"
+					},
+					{
+						"name": "from",
+						"in": "path",
+						"description": "From Date",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "to",
+						"in": "path",
+						"description": "To Date",
+						"required": false,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/definitions/ResponseEntity"
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				}
+			}
+		},
+		"/item/{item}/files": {
+			"get": {
+				"tags": [
+					"metrics-controller"
+				],
+				"summary": "Returns a request counts for an item's files from timeframe.medium days config setting or 90 days.",
+				"operationId": "getItemFilesUsingGET",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"*/*"
+				],
+				"parameters": [
+					{
+						"name": "to",
+						"in": "path",
+						"description": "to",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "item",
+						"in": "path",
+						"description": "ScienceBase Catalog Item ID.",
+						"required": false,
+						"type": "string",
+						"default": "55b943ade4b09a3b01b65d78"
+					},
+					{
+						"name": "from",
+						"in": "path",
+						"description": "From Date",
+						"required": false,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/definitions/ResponseEntity"
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				}
+			}
+		},
+		"/items": {
+			"get": {
+				"tags": [
+					"metrics-controller"
+				],
+				"summary": "Return the list of top requested items. Default is top 10 for past 30 days or timeframe.short config param.",
+				"operationId": "getTopItemsUsingGET",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"*/*"
+				],
+				"parameters": [
+					{
+						"name": "from",
+						"in": "path",
+						"description": "from",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "to",
+						"in": "path",
+						"description": "to",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "top",
+						"in": "path",
+						"description": "top",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "excludeBots",
+						"in": "path",
+						"description": "excludeBots",
+						"required": false,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/definitions/ResponseEntity"
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				}
+			}
+		},
+		"/locations": {
+			"get": {
+				"tags": [
+					"metrics-controller"
+				],
+				"summary": "Top locations for requests. Default is top 20 for past timeframe.short days config setting or 30 days.",
+				"operationId": "getTopLocationUsingGET",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"*/*"
+				],
+				"parameters": [
+					{
+						"name": "by",
+						"in": "path",
+						"description": "Options are 'region' or 'city'.",
+						"required": false,
+						"type": "string",
+						"default": "city"
+					},
+					{
+						"name": "top",
+						"in": "path",
+						"description": "Limit for top occurring.",
+						"required": false,
+						"type": "string",
+						"default": "20"
+					},
+					{
+						"name": "from",
+						"in": "path",
+						"description": "From Date",
+						"required": false,
+						"type": "string",
+						"default": "2016/01/01"
+					},
+					{
+						"name": "to",
+						"in": "path",
+						"description": "To Date",
+						"required": false,
+						"type": "string",
+						"default": "2016/02/01"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/definitions/ResponseEntity"
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				}
+			}
+		},
+		"/locations/agent": {
+			"get": {
+				"tags": [
+					"metrics-controller"
+				],
+				"summary": "Agent requests by country or city.",
+				"operationId": "getLocationAgentUsingGET",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"*/*"
+				],
+				"parameters": [
+					{
+						"name": "country",
+						"in": "path",
+						"description": "country",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "region",
+						"in": "path",
+						"description": "region",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "city",
+						"in": "path",
+						"description": "city",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "by",
+						"in": "path",
+						"description": "Options are 'country' or 'city'.",
+						"required": false,
+						"type": "string",
+						"default": "city"
+					},
+					{
+						"name": "top",
+						"in": "path",
+						"description": "Limit for top occurring.",
+						"required": false,
+						"type": "string",
+						"default": "20"
+					},
+					{
+						"name": "from",
+						"in": "path",
+						"description": "From Date",
+						"required": false,
+						"type": "string",
+						"default": "2016/01/01"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/definitions/ResponseEntity"
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				}
+			}
+		},
+		"/locations/cities": {
+			"get": {
+				"tags": [
+					"metrics-controller"
+				],
+				"summary": "Top cities for requests. Default is top 20 for past timeframe.short days config setting or 30 days.",
+				"operationId": "getTopLocationCityUsingGET",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"*/*"
+				],
+				"parameters": [
+					{
+						"name": "top",
+						"in": "path",
+						"description": "Limit for top occurring.",
+						"required": false,
+						"type": "string",
+						"default": "20"
+					},
+					{
+						"name": "from",
+						"in": "path",
+						"description": "From Date",
+						"required": false,
+						"type": "string",
+						"default": "2016/01/01"
+					},
+					{
+						"name": "to",
+						"in": "path",
+						"description": "To Date",
+						"required": false,
+						"type": "string",
+						"default": "2016/02/01"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/definitions/ResponseEntity"
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				}
+			}
+		},
+		"/locations/city/resource": {
+			"get": {
+				"tags": [
+					"metrics-controller"
+				],
+				"summary": "Resource requests by city.",
+				"operationId": "getLocationCityResourceUsingGET",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"*/*"
+				],
+				"parameters": [
+					{
+						"name": "top",
+						"in": "path",
+						"description": "Limit for top occurring.",
+						"required": false,
+						"type": "string",
+						"default": "20"
+					},
+					{
+						"name": "from",
+						"in": "path",
+						"description": "From Date",
+						"required": false,
+						"type": "string",
+						"default": "2016/01/01"
+					},
+					{
+						"name": "country",
+						"in": "path",
+						"description": "Country",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "region",
+						"in": "path",
+						"description": "Region",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "city",
+						"in": "path",
+						"description": "City",
+						"required": true,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/definitions/ResponseEntity"
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				}
+			}
+		},
+		"/locations/countries": {
+			"get": {
+				"tags": [
+					"metrics-controller"
+				],
+				"summary": "Top country for requests. Default is top 20 for past timeframe.short days config setting or 30 days.",
+				"operationId": "getTopLocationCountryUsingGET",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"*/*"
+				],
+				"parameters": [
+					{
+						"name": "top",
+						"in": "path",
+						"description": "Limit for top occurring.",
+						"required": false,
+						"type": "string",
+						"default": "20"
+					},
+					{
+						"name": "from",
+						"in": "path",
+						"description": "From Date",
+						"required": false,
+						"type": "string",
+						"default": "2016/01/01"
+					},
+					{
+						"name": "to",
+						"in": "path",
+						"description": "To Date",
+						"required": false,
+						"type": "string",
+						"default": "2016/02/01"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/definitions/ResponseEntity"
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				}
+			}
+		},
+		"/locations/country/resource": {
+			"get": {
+				"tags": [
+					"metrics-controller"
+				],
+				"summary": "Resource requests by country.",
+				"operationId": "getLocationCountryResourceUsingGET",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"*/*"
+				],
+				"parameters": [
+					{
+						"name": "top",
+						"in": "path",
+						"description": "Limit for top occurring.",
+						"required": false,
+						"type": "string",
+						"default": "20"
+					},
+					{
+						"name": "from",
+						"in": "path",
+						"description": "From Date",
+						"required": false,
+						"type": "string",
+						"default": "2016/01/01"
+					},
+					{
+						"name": "country",
+						"in": "path",
+						"description": "Country Code",
+						"required": true,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/definitions/ResponseEntity"
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				}
+			}
+		},
+		"/locations/global": {
+			"get": {
+				"tags": [
+					"metrics-controller"
+				],
+				"summary": "Top cities globally for requests. Default is top 20 for past timeframe.short days config setting or 30 days.",
+				"operationId": "getTopLocationGlobalCityUsingGET",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"*/*"
+				],
+				"parameters": [
+					{
+						"name": "top",
+						"in": "path",
+						"description": "Limit for top occurring.",
+						"required": false,
+						"type": "string",
+						"default": "20"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/definitions/ResponseEntity"
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				}
+			}
+		},
+		"/locations/item": {
+			"get": {
+				"tags": [
+					"metrics-controller"
+				],
+				"summary": "Item requests by country or city.",
+				"operationId": "getLocationItemUsingGET",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"*/*"
+				],
+				"parameters": [
+					{
+						"name": "country",
+						"in": "path",
+						"description": "country",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "region",
+						"in": "path",
+						"description": "region",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "city",
+						"in": "path",
+						"description": "city",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "by",
+						"in": "path",
+						"description": "Options are 'country' or 'city'.",
+						"required": false,
+						"type": "string",
+						"default": "city"
+					},
+					{
+						"name": "top",
+						"in": "path",
+						"description": "Limit for top occurring.",
+						"required": false,
+						"type": "string",
+						"default": "20"
+					},
+					{
+						"name": "from",
+						"in": "path",
+						"description": "From Date",
+						"required": false,
+						"type": "string",
+						"default": "2016/01/01"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/definitions/ResponseEntity"
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				}
+			}
+		},
+		"/locations/regions": {
+			"get": {
+				"tags": [
+					"metrics-controller"
+				],
+				"summary": "Top regions for requests. Default is top 20 for past timeframe.short days config setting or 30 days.",
+				"operationId": "getTopLocationRegionUsingGET",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"*/*"
+				],
+				"parameters": [
+					{
+						"name": "top",
+						"in": "path",
+						"description": "Limit for top occurring.",
+						"required": false,
+						"type": "string",
+						"default": "20"
+					},
+					{
+						"name": "from",
+						"in": "path",
+						"description": "From Date",
+						"required": false,
+						"type": "string",
+						"default": "2016/01/01"
+					},
+					{
+						"name": "to",
+						"in": "path",
+						"description": "To Date",
+						"required": false,
+						"type": "string",
+						"default": "2016/02/01"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/definitions/ResponseEntity"
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				}
+			}
+		},
+		"/locations/resource": {
+			"get": {
+				"tags": [
+					"metrics-controller"
+				],
+				"summary": "Resource requests by country or city.",
+				"operationId": "getLocationResourceUsingGET",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"*/*"
+				],
+				"parameters": [
+					{
+						"name": "country",
+						"in": "path",
+						"description": "country",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "region",
+						"in": "path",
+						"description": "region",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "city",
+						"in": "path",
+						"description": "city",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "by",
+						"in": "path",
+						"description": "Options are 'country' or 'city'.",
+						"required": false,
+						"type": "string",
+						"default": "city"
+					},
+					{
+						"name": "top",
+						"in": "path",
+						"description": "Limit for top occurring.",
+						"required": false,
+						"type": "string",
+						"default": "20"
+					},
+					{
+						"name": "from",
+						"in": "path",
+						"description": "From Date",
+						"required": false,
+						"type": "string",
+						"default": "2016/01/01"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/definitions/ResponseEntity"
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				}
+			}
+		},
+		"/locations/states": {
+			"get": {
+				"tags": [
+					"metrics-controller"
+				],
+				"summary": "Top US cities for requests. Default is top 20 for past timeframe.short days config setting or 30 days.",
+				"operationId": "getTopLocationStateUsingGET",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"*/*"
+				],
+				"parameters": [
+					{
+						"name": "top",
+						"in": "path",
+						"description": "Limit for top occurring.",
+						"required": false,
+						"type": "string",
+						"default": "20"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/definitions/ResponseEntity"
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				}
+			}
+		},
+		"/requests/items": {
+			"get": {
+				"tags": [
+					"metrics-controller"
+				],
+				"summary": "Counts of item requests between dates by day, week, month, or year. Default is by week for past timeframe.long days config setting or 180 days.",
+				"operationId": "getItemRequestsUsingGET",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"*/*"
+				],
+				"parameters": [
+					{
+						"name": "timescale",
+						"in": "path",
+						"description": "('day', 'week', 'month', 'year')",
+						"required": false,
+						"type": "string",
+						"default": "week"
+					},
+					{
+						"name": "from",
+						"in": "path",
+						"description": "From Date",
+						"required": false,
+						"type": "string",
+						"default": "2016/01/01"
+					},
+					{
+						"name": "to",
+						"in": "path",
+						"description": "To Date",
+						"required": false,
+						"type": "string",
+						"default": "2016/02/01"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/definitions/ResponseEntity"
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				}
+			}
+		},
+		"/resourceparams/{item}": {
+			"get": {
+				"tags": [
+					"metrics-controller"
+				],
+				"summary": "Returns the request counts for a given item and a resource parameter (for example: 'f' for file) over timeframe.short days config setting or 30 days.",
+				"operationId": "getItemResourceParamsUsingGET",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"*/*"
+				],
+				"parameters": [
+					{
+						"name": "item",
+						"in": "path",
+						"description": "ScienceBase Catalog Item ID.",
+						"required": false,
+						"type": "string",
+						"default": "55b943ade4b09a3b01b65d78"
+					},
+					{
+						"name": "key",
+						"in": "path",
+						"description": "The parameter key (Example: 55b943ade4b09a3b01b65d78?format=json)",
+						"required": false,
+						"type": "string",
+						"default": "f"
+					},
+					{
+						"name": "from",
+						"in": "path",
+						"description": "From Date",
+						"required": false,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/definitions/ResponseEntity"
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				}
+			}
+		},
+		"/resources/requests": {
+			"get": {
+				"tags": [
+					"metrics-controller"
+				],
+				"summary": "Return the list of top requested resource strings. Default is top 20 for past 30 days or timeframe.short config param.",
+				"operationId": "getTopResourceRequestsUsingGET",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"*/*"
+				],
+				"parameters": [
+					{
+						"name": "from",
+						"in": "path",
+						"description": "from",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "to",
+						"in": "path",
+						"description": "to",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "top",
+						"in": "path",
+						"description": "top",
+						"required": false,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/definitions/ResponseEntity"
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				}
+			}
+		},
+		"/resources/requests/locations": {
+			"get": {
+				"tags": [
+					"metrics-controller"
+				],
+				"summary": "Return a list of top requesting locations for a particular resource url. Default is top 20 for past 90 days or timeframe.med config param.",
+				"operationId": "getResourceRequestLocationsUsingGET",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"*/*"
+				],
+				"parameters": [
+					{
+						"name": "from",
+						"in": "path",
+						"description": "from",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "to",
+						"in": "path",
+						"description": "to",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "top",
+						"in": "path",
+						"description": "top",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "resid",
+						"in": "path",
+						"description": "resid",
+						"required": true,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/definitions/ResponseEntity"
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				}
+			}
+		},
+		"/traffic/volume": {
+			"get": {
+				"tags": [
+					"metrics-controller"
+				],
+				"summary": "Returns a List of count of total requests and sum of the response content size by day, week, month, and year between dates. Default is by week over past timescale.long days or 180 days.",
+				"operationId": "getTrafficVolumeUsingGET",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"*/*"
+				],
+				"parameters": [
+					{
+						"name": "timescale",
+						"in": "path",
+						"description": "timescale",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "from",
+						"in": "path",
+						"description": "from",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "to",
+						"in": "path",
+						"description": "to",
+						"required": false,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/definitions/ResponseEntity"
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				}
+			}
+		},
+		"/version": {
+			"get": {
+				"tags": [
+					"metrics-controller"
+				],
+				"summary": "Get the version of the Catalog Metrics API.",
+				"operationId": "getVersionUsingGET",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"*/*"
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"type": "array",
+							"items": {
+								"type": "object"
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				}
+			}
+		}
+	},
+	"definitions": {
+		"ResponseEntity": {
+			"type": "object",
+			"properties": {
+				"body": {
+					"type": "object"
+				},
+				"statusCode": {
+					"type": "string",
+					"enum": [
+						"100",
+						"101",
+						"102",
+						"103",
+						"200",
+						"201",
+						"202",
+						"203",
+						"204",
+						"205",
+						"206",
+						"207",
+						"208",
+						"226",
+						"300",
+						"301",
+						"302",
+						"303",
+						"304",
+						"305",
+						"307",
+						"308",
+						"400",
+						"401",
+						"402",
+						"403",
+						"404",
+						"405",
+						"406",
+						"407",
+						"408",
+						"409",
+						"410",
+						"411",
+						"412",
+						"413",
+						"414",
+						"415",
+						"416",
+						"417",
+						"418",
+						"419",
+						"420",
+						"421",
+						"422",
+						"423",
+						"424",
+						"426",
+						"428",
+						"429",
+						"431",
+						"451",
+						"500",
+						"501",
+						"502",
+						"503",
+						"504",
+						"505",
+						"506",
+						"507",
+						"508",
+						"509",
+						"510",
+						"511"
+					]
+				},
+				"statusCodeValue": {
+					"type": "integer",
+					"format": "int32"
+				}
+			}
+		}
+	}
+}
